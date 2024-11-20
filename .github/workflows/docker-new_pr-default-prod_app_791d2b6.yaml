@@ -396,7 +396,7 @@ jobs:
       - name: 'Run :: Comment on PR with AI Service'
         run: |2-
 
-              echo "test this"
+              echo ls
               
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
   _status-success:
