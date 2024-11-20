@@ -395,7 +395,7 @@ jobs:
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
       - name: 'Run :: Comment on PR with AI Service'
         run: |2-
-
+              cd ../
               ls
               
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
