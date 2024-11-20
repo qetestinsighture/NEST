@@ -407,7 +407,7 @@ jobs:
               chmod +x /home/runner/bin/git-diffn
               ls -l /home/runner/bin/git-diffn
               # Ensure /home/runner/bin is in the PATH (it should already be in most cases)
-              echo 'export PATH="$HOME/bin:$PATH"' >> $GITHUB_PATH
+              echo '/home/runner/bin/git-diffn' >> $GITHUB_PATH
               ls /home/runner
               git-diffn
                
