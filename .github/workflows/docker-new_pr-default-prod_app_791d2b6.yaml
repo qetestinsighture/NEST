@@ -408,7 +408,7 @@ jobs:
               # Ensure /home/runner/bin is in the PATH (it should already be in most cases)
               echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
               source ~/.bashrc
-              git diffn
+              git-diffn
                
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
 
