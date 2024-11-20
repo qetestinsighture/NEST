@@ -406,7 +406,7 @@ jobs:
               echo "export PATH=\"$(pwd):\$PATH\"" >> $GITHUB_ENV
               echo "Updated PATH for this workflow:"
               echo $PATH
-              git diffn --help
+              diffn --help
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
 
   _status-success:
