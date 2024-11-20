@@ -395,8 +395,18 @@ jobs:
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
       - name: 'Run :: Comment on PR with AI Service'
         run: |2-
-              pwd
-              
+              # Install the script in the current working directory
+              curl -LO https://raw.githubusercontent.com/ElectricRCAircraftGuy/eRCaGuy_dotfiles/master/useful_scripts/git-diffn.sh
+              chmod +x git-diffn.sh
+              mv git-diffn.sh git-diffn
+              echo "Installed git-diffn in $(pwd):"
+              ls -l
+          
+              # Add the current directory to PATH
+              echo "export PATH=\"$(pwd):\$PATH\"" >> $GITHUB_ENV
+              echo "Updated PATH for this workflow:"
+              echo $PATH
+              git diffn --help
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
 
   _status-success:
