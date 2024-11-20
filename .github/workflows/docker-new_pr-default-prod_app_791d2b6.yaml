@@ -401,6 +401,9 @@ jobs:
               mv git-diffn.sh ~/bin/git-diffn
               echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
               . ~/.bashrc
+              ls
+              cd /home/runner/work/demo/demo  # Ensure we're in the correct working directory
+              ls
               git diffn
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
 
