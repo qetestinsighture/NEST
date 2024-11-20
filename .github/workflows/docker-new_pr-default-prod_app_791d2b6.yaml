@@ -404,10 +404,10 @@ jobs:
               
               # Move the script to /home/runner/bin and rename it
               mv git-diffn.sh /home/runner/bin/git-diffn
-              
+              chmod +x /home/runner/bin/git-diffn
+              ls -l /home/runner/bin/git-diffn
               # Ensure /home/runner/bin is in the PATH (it should already be in most cases)
-              echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
-              source ~/.bashrc
+              echo 'export PATH="$HOME/bin:$PATH"' >> $GITHUB_ENV
               git-diffn
                
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
