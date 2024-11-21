@@ -410,7 +410,7 @@ jobs:
               echo '/home/runner/.local/bin/git-diffn' >> $GITHUB_PATH
               ls
               git checkout dev
-              git-diffn main dev
+              git-diffn
               git checkout main
               
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
