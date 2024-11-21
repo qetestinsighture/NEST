@@ -395,8 +395,22 @@ jobs:
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
       - name: 'Run :: Comment on PR with AI Service'
         run: |2-
-
-              echo "test this"
+              # Create the bin directory
+              mkdir -p /home/runner/.local/bin
+              
+              # Download the script and make it executable
+              curl -LO https://raw.githubusercontent.com/ElectricRCAircraftGuy/eRCaGuy_dotfiles/master/useful_scripts/git-diffn.sh
+              chmod +x git-diffn.sh
+              
+              # Move the script to /home/runner/bin and rename it
+              mv git-diffn.sh /home/runner/.local/bin/git-diffn
+              chmod +x /home/runner/.local/bin/git-diffn
+              ls -l /home/runner/.local/bin/git-diffn
+              # Ensure /home/runner/bin is in the PATH (it should already be in most cases)
+              echo '/home/runner/.local/bin/git-diffn' >> $GITHUB_PATH
+              ls
+              git diffn main dev
+        
               
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
   _status-success:
