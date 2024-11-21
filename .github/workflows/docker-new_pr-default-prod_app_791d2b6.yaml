@@ -409,7 +409,7 @@ jobs:
               # Ensure /home/runner/bin is in the PATH (it should already be in most cases)
               echo '/home/runner/.local/bin/git-diffn' >> $GITHUB_PATH
               ls
-              git diffn main dev
+              git-diffn main dev
         
               
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
