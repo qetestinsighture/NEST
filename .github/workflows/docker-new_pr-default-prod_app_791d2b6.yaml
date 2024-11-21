@@ -6,7 +6,7 @@ name: docker-new_pr-default-prod_app_791d2b6 Pipeline (Skyu Generated)
       - synchronize
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_9b417883-756f-409f-8de3-acd4bdae3ed9
+    types: pipeline_1af40b9a-878c-45b9-8618-ac5d74c20c98
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.DEMO_DOCKERNEW_PRDEFAULTPROD_APP_791D2B6}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -395,27 +395,10 @@ jobs:
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
       - name: 'Run :: Comment on PR with AI Service'
         run: |2-
-              # Create the bin directory
-              mkdir -p /home/runner/.local/bin
-              
-              # Download the script and make it executable
-              curl -LO https://raw.githubusercontent.com/ElectricRCAircraftGuy/eRCaGuy_dotfiles/master/useful_scripts/git-diffn.sh
-              chmod +x git-diffn.sh
-              
-              # Move the script to /home/runner/bin and rename it
-              mv git-diffn.sh /home/runner/.local/bin/git-diffn
-              chmod +x /home/runner/.local/bin/git-diffn
-              ls -l /home/runner/.local/bin/git-diffn
-              # Ensure /home/runner/bin is in the PATH (it should already be in most cases)
-              echo '/home/runner/.local/bin/git-diffn' >> $GITHUB_PATH
-              ls
-              git-diffn
-              git-diffn --help
-              git diffn
-              git diffn --help
-               
-        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
 
+              echo "test this"
+              
+        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
   _status-success:
     name: ' Status Success'
     permissions: write-all
