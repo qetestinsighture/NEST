@@ -405,7 +405,7 @@ jobs:
               chmod +x git-diffn.sh
               sudo mv git-diffn.sh /usr/local/bin/git-diffn
               echo "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
-              run: echo "/usr/local/bin/git-diffn" >> $GITHUB_PATH
+              echo "/usr/local/bin/git-diffn" >> $GITHUB_PATH
               echo "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
               git-diffn
               echo "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
