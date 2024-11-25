@@ -405,7 +405,7 @@ jobs:
                     ls
                     echo "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
                     chmod +x git-diffn.sh
-                    bash git-diffn.sh main -- dev
+                    sh git-diffn.sh main dev
                     echo "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
       - name: 'Run :: Comment on PR with AI Service'
         run: |
