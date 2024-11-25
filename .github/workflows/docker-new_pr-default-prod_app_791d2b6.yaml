@@ -395,17 +395,14 @@ jobs:
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
       - name: 'Run :: Comment on PR with AI Service'
         run: |
-          mkdir -p /home/runner/.local/bin
-          curl -LO https://raw.githubusercontent.com/ElectricRCAircraftGuy/eRCaGuy_dotfiles/master/useful_scripts/git-diffn.sh
-          chmod +x git-diffn.sh
-          mv git-diffn.sh /home/runner/.local/bin/git-diffn
-          export PATH="/home/runner/.local/bin:$PATH"
-          echo "Script Path: $(which git-diffn)"
-          ls -l /home/runner/.local/bin
-          git branch -a
-          git checkout dev || echo "Branch 'dev' not found."
-          git-diffn || echo "Error running git-diffn."
-          git checkout main || echo "Branch 'main' not found."
+              mkdir -p ~/bin
+              cd ~/bin
+              curl -LO https://raw.githubusercontent.com/ElectricRCAircraftGuy/eRCaGuy_dotfiles/master/useful_scripts/git-diffn.sh
+              chmod +x git-diffn.sh
+              mv git-diffn.sh git-diffn
+              echo "$HOME/bin" >> $GITHUB_PATH
+              git-diffn
+              git diffn
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
         
   _status-success:
