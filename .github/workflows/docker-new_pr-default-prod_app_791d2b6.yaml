@@ -395,16 +395,11 @@ jobs:
       #   if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
       - name: 'Run :: Comment on PR with AI Service'
         run: |
-              echo "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
-              ls
-              echo "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
               curl -LO https://raw.githubusercontent.com/ElectricRCAircraftGuy/eRCaGuy_dotfiles/master/useful_scripts/git-diffn.sh
-              echo "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
-              ls
               echo "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
               sudo mv git-diffn.sh /usr/local/bin/git-diffn
               ls /usr/local/bin/git-diffn
-              chmod +x git-diffn.sh
+              chmod +x /usr/local/bin/git-diffn/git-diffn.sh
               sh git-diffn.sh main..dev
               echo "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
