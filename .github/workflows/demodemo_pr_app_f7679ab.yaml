@@ -400,6 +400,12 @@ jobs:
               chmod +x git-diffn.sh
               sudo mv git-diffn.sh /usr/local/bin/git-diffn
               DIFF_OUTPUT=$(git diffn origin/$GITHUB_BASE_REF origin/$GITHUB_HEAD_REF)
+              FORMATTED_DIFF_OUTPUT=$(echo "$DIFF_OUTPUT" | sed ':a;N;$!ba;s/\n/\\n/g')
+              echo "##################################################################"
+              echo $DIFF_OUTPUT
+              echo "##################################################################"
+              echo $FORMATTED_DIFF_OUTPUT
+              echo "##################################################################"
               response=$(curl -X POST -d "diff=$DIFF_OUTPUT"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.AI_COMMENTS_ENDPOINT }}")
               if echo "$response" | grep -q '"success":true'; then
                 echo "SUCCESS :: $response"
