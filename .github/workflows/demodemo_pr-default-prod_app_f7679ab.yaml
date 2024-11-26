@@ -410,7 +410,7 @@ jobs:
         with:
           script: |2-
 
-                     console.log("TEST");
+                     console.log('${{ env.DIFF_OUTPUT }}');
                   
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
   _status-success:
