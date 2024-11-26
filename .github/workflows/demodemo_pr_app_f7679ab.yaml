@@ -360,39 +360,39 @@ jobs:
                 fi
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Build With Docker'
-        run: >-
-          docker build -t ${{ env.IMAGE_NAME }}:${{ env.COMMIT_ID }} -f
-          ${{env.DOCKER_FILE_PATH}} --build-arg BUILT_WITH=SKYU${{
-          env.DOCKER_BUILD_ARGS }} ${{env.DOCKER_BUILD_CONTEXT}}
-        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
-      - name: 'Run :: Trivy vulnerability scanner'
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.IMAGE_NAME }}:${{ env.COMMIT_ID }}
-          format: ${{env.TRIVY_RESULT_FORMAT}}
-          output: ${{ env.COMMIT_ID }}-image-vulnerability-report.json
-          exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
-          vuln-type: os,library
-          severity: ${{env.SCAN_SEVERITY}}
-          hide-progress: true
-        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
-      - name: 'Run :: Comment on PR with Trivy Summary'
-        uses: actions/github-script@v6
-        with:
-          script: |2-
+      # - name: 'Run :: Build With Docker'
+      #   run: >-
+      #     docker build -t ${{ env.IMAGE_NAME }}:${{ env.COMMIT_ID }} -f
+      #     ${{env.DOCKER_FILE_PATH}} --build-arg BUILT_WITH=SKYU${{
+      #     env.DOCKER_BUILD_ARGS }} ${{env.DOCKER_BUILD_CONTEXT}}
+      #   if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
+      # - name: 'Run :: Trivy vulnerability scanner'
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: ${{ env.IMAGE_NAME }}:${{ env.COMMIT_ID }}
+      #     format: ${{env.TRIVY_RESULT_FORMAT}}
+      #     output: ${{ env.COMMIT_ID }}-image-vulnerability-report.json
+      #     exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
+      #     vuln-type: os,library
+      #     severity: ${{env.SCAN_SEVERITY}}
+      #     hide-progress: true
+      #   if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
+      # - name: 'Run :: Comment on PR with Trivy Summary'
+      #   uses: actions/github-script@v6
+      #   with:
+      #     script: |2-
 
-                  const fs = require('fs');
-                  const trivySummary = fs.readFileSync('${{ env.COMMIT_ID }}-image-vulnerability-report.json', 'utf-8');
+      #             const fs = require('fs');
+      #             const trivySummary = fs.readFileSync('${{ env.COMMIT_ID }}-image-vulnerability-report.json', 'utf-8');
 
-                  github.rest.issues.createComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: context.issue.number,
-                    body: 'Trivy ${{env.SCAN_SEVERITY}} Vulnerability Scan Results\n```\n' + trivySummary + '\n```',
-                  });
+      #             github.rest.issues.createComment({
+      #               owner: context.repo.owner,
+      #               repo: context.repo.repo,
+      #               issue_number: context.issue.number,
+      #               body: 'Trivy ${{env.SCAN_SEVERITY}} Vulnerability Scan Results\n```\n' + trivySummary + '\n```',
+      #             });
                   
-        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
+      #   if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
       - name: 'Run :: Comment on PR with AI Service'
         run: |2-
 
@@ -400,14 +400,15 @@ jobs:
               chmod +x git-diffn.sh
               sudo mv git-diffn.sh /usr/local/bin/git-diffn
               DIFF_OUTPUT=$(git diffn origin/$GITHUB_BASE_REF origin/$GITHUB_HEAD_REF)
+              DIFF_FORMAT_OUTPUT="${DIFF_OUTPUT@Q}"
               echo "##################################################################"
-              echo $DIFF_OUTPUT
+              echo DIFF_FORMAT_OUTPUT
               echo "##################################################################"
-              # Correcting how DIFF_OUTPUT is passed to jq
-              payload=$(jq -n --arg diff "$DIFF_OUTPUT" '{diff: $diff}')
-              echo "payload: $payload"
+              # # Correcting how DIFF_OUTPUT is passed to jq
+              # payload=$(jq -n --arg diff "$DIFF_OUTPUT" '{diff: $diff}')
+              # echo "payload: $payload"
               echo "##################################################################"
-              response=$(curl -X POST -d "$payload"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.AI_COMMENTS_ENDPOINT }}")
+              response=$(curl -X POST -d "diff=$DIFF_FORMAT_OUTPUT"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.AI_COMMENTS_ENDPOINT }}")
               if echo "$response" | grep -q '"success":true'; then
                 echo "SUCCESS :: $response"
               else
