@@ -401,6 +401,8 @@ jobs:
               sudo mv git-diffn.sh /usr/local/bin/git-diffn
               DIFF_OUTPUT=$(git diffn origin/$GITHUB_BASE_REF origin/$GITHUB_HEAD_REF)
               echo "##################################################################"
+              echo $DIFF_OUTPUT
+              echo "##################################################################"
               payload=$(jq -n --arg diff "$DIFF_OUTPUT | @sh")
               echo "payload: $payload"
               echo "##################################################################"
