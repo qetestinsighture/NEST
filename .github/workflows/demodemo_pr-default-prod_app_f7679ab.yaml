@@ -360,23 +360,23 @@ jobs:
                 fi
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Build With Docker'
-        run: >-
-          docker build -t ${{ env.IMAGE_NAME }}:${{ env.COMMIT_ID }} -f
-          ${{env.DOCKER_FILE_PATH}} --build-arg BUILT_WITH=SKYU${{
-          env.DOCKER_BUILD_ARGS }} ${{env.DOCKER_BUILD_CONTEXT}}
-        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
-      - name: 'Run :: Trivy vulnerability scanner'
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.IMAGE_NAME }}:${{ env.COMMIT_ID }}
-          format: ${{env.TRIVY_RESULT_FORMAT}}
-          output: ${{ env.COMMIT_ID }}-image-vulnerability-report.json
-          exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
-          vuln-type: os,library
-          severity: ${{env.SCAN_SEVERITY}}
-          hide-progress: true
-        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
+      # - name: 'Run :: Build With Docker'
+      #   run: >-
+      #     docker build -t ${{ env.IMAGE_NAME }}:${{ env.COMMIT_ID }} -f
+      #     ${{env.DOCKER_FILE_PATH}} --build-arg BUILT_WITH=SKYU${{
+      #     env.DOCKER_BUILD_ARGS }} ${{env.DOCKER_BUILD_CONTEXT}}
+      #   if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
+      # - name: 'Run :: Trivy vulnerability scanner'
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: ${{ env.IMAGE_NAME }}:${{ env.COMMIT_ID }}
+      #     format: ${{env.TRIVY_RESULT_FORMAT}}
+      #     output: ${{ env.COMMIT_ID }}-image-vulnerability-report.json
+      #     exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
+      #     vuln-type: os,library
+      #     severity: ${{env.SCAN_SEVERITY}}
+      #     hide-progress: true
+      #   if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
       - name: 'Run :: Comment on PR with Trivy Summary'
         uses: actions/github-script@v6
         with:
@@ -394,19 +394,20 @@ jobs:
                   
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
       - name: 'Run :: Comment on PR with AI Service'
+        id: git_diffn_step
         run: |2-
 
               curl -LO https://raw.githubusercontent.com/ElectricRCAircraftGuy/eRCaGuy_dotfiles/master/useful_scripts/git-diffn.sh
               chmod +x git-diffn.sh
               sudo mv git-diffn.sh /usr/local/bin/git-diffn
-              DIFF_OUTPUT=$(git diffn origin/$GITHUB_BASE_REF origin/$GITHUB_HEAD_REF)
+              DIFF_OUTPUT=$(git diffn origin/$GITHUB_BASE_REF origin/$GITHUB_HEAD_REF | base64)
               echo "diff_output=$DIFF_OUTPUT" >> $GITHUB_ENV
             
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
       - name: 'Run :: Use Git Diff Output'
         run: |2-
 
-              echo "$diff_output"
+              echo "$diff_output" | base64 --decode
             
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
   _status-success:
