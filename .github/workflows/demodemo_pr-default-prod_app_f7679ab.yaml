@@ -394,7 +394,6 @@ jobs:
                   
       #   if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
       - name: 'Run :: Comment on PR with AI Service'
-        id: git_diffn_step
         run: |2-
 
               curl -LO https://raw.githubusercontent.com/ElectricRCAircraftGuy/eRCaGuy_dotfiles/master/useful_scripts/git-diffn.sh
@@ -407,10 +406,12 @@ jobs:
             
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
       - name: 'Run :: Use Git Diff Output'
-        run: |2-
+        uses: actions/github-script@v6
+        with:
+          script: |2-
 
-              echo "$DIFF_OUTPUT"
-            
+                   console.log(${{ env.COMMIT_ID }});
+                  
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
   _status-success:
     name: ' Status Success'
