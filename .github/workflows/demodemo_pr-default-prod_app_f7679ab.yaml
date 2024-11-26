@@ -400,14 +400,16 @@ jobs:
               curl -LO https://raw.githubusercontent.com/ElectricRCAircraftGuy/eRCaGuy_dotfiles/master/useful_scripts/git-diffn.sh
               chmod +x git-diffn.sh
               sudo mv git-diffn.sh /usr/local/bin/git-diffn
-              DIFF_OUTPUT=$(git diffn origin/$GITHUB_BASE_REF origin/$GITHUB_HEAD_REF | base64)
-              echo "diff_output=$DIFF_OUTPUT" >> $GITHUB_ENV
+              git diffn origin/$GITHUB_BASE_REF origin/$GITHUB_HEAD_REF > diff_output.txt
+              echo "DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
+              cat diff_output.txt >> $GITHUB_ENV
+              echo "EOF" >> $GITHUB_ENV
             
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
       - name: 'Run :: Use Git Diff Output'
         run: |2-
 
-              echo "$diff_output" | base64 --decode
+              echo "$DIFF_OUTPUT"
             
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
   _status-success:
