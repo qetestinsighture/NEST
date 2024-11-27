@@ -409,7 +409,34 @@ jobs:
 
                   const fs = require('fs');
                   const diffOutput = fs.readFileSync('diff_output.txt', 'utf-8');
-                  console.log(diffOutput);
+                  const aiCommentsEndpointUrl = '${{ env.${aiCommentsEndpoint} }}';
+
+                  fetch(aiCommentsEndpointUrl, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': '${{ env.SERVICE_ACC_ACCESS_TOKEN }}' ',
+                      'x-auth-by': 'sa',
+                      'x-organization-id': '${{ env.PIPELINE_ORGANIZATION_ID }}',
+                      'x-project-id': '${{ env.PIPELINE_PROJECT_ID }}',
+                      'x-trace-id': '${{ env.PIPELINE_TRACE_ID }}'
+                    },
+                    body: JSON.stringify({
+                      diff: diffOutput
+                    }),
+                  })
+                  .then(response => {
+                    if (!response.ok) {
+                      throw new Error(\`Error getting comments: \${response.statusText}\`);
+                    }
+                    return response.json();
+                  })
+                  .then(data => {
+                    console.log('Comment posted on GitLab PR:', data);
+                  })
+                  .catch(error => {
+                    console.error('Error making API call to GitLab:', error);
+                  });
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
   _status-success:
     name: ' Status Success'
