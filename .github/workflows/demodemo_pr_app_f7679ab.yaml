@@ -406,7 +406,7 @@ jobs:
               echo "##################################################################"
               echo $PROCESSED_DIFF
               echo "##################################################################"
-              response=$(curl -X POST -d "diff=$PROCESSED_DIFF"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.AI_COMMENTS_ENDPOINT }}")
+              response=$(curl -X POST -d "{\"diff\":\"$PROCESSED_DIFF\"}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/json'  "${{ env.AI_COMMENTS_ENDPOINT }}")
               if echo "$response" | grep -q '"success":true'; then
                 echo "SUCCESS :: $response"
               else
