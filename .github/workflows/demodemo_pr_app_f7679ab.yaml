@@ -437,11 +437,14 @@ jobs:
                     console.log("**********************************************");
                     for (const review of reviews) {
                       const commentBody = `${review.body}\n\n**File:** ${review.path}\n**Line:** ${review.line}`;
-                      github.rest.issues.createComment({
+                      github.rest.pulls.createReviewComment({
                         owner: context.repo.owner,
                         repo: context.repo.repo,
-                        issue_number: context.issue.number,
-                        body: commentBody,
+                        pull_number: context.issue.number,
+                        body: review.body,
+                        path: review.path,
+                        line: review.line,
+                        side: review.side.toLowerCase()
                       }).then(() => {
                         console.log('Comment posted:', commentBody);
                       }).catch(err => {
