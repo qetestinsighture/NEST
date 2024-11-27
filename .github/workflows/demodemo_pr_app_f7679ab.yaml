@@ -399,15 +399,15 @@ jobs:
               curl -LO https://raw.githubusercontent.com/ElectricRCAircraftGuy/eRCaGuy_dotfiles/master/useful_scripts/git-diffn.sh
               chmod +x git-diffn.sh
               sudo mv git-diffn.sh /usr/local/bin/git-diffn
-              DIFF_OUTPUT=$(git diffn origin/$GITHUB_BASE_REF origin/$GITHUB_HEAD_REF)
+              PROCESSED_DIFF=$(echo "$DIFF_OUTPUT" | awk '{printf "%s\\n", $0}' | sed 's/\\/\\\\/g')
               # JSON stringify the diff output
               diff_outputss=$($DIFF_OUTPUT | awk '{printf "%s\\n", $0}' | sed 's/\\/\\\\/g')
               echo "##################################################################"
-              echo $diff_outputss
+              echo $PROCESSED_DIFF
               echo "##################################################################"
-              echo $STRINGIFIED_DIFF
+              echo $PROCESSED_DIFF
               echo "##################################################################"
-              response=$(curl -X POST -d "diff=$diff_outputss"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.AI_COMMENTS_ENDPOINT }}")
+              response=$(curl -X POST -d "diff=$PROCESSED_DIFF"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.AI_COMMENTS_ENDPOINT }}")
               if echo "$response" | grep -q '"success":true'; then
                 echo "SUCCESS :: $response"
               else
