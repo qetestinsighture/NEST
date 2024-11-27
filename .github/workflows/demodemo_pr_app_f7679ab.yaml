@@ -432,6 +432,9 @@ jobs:
                     console.log('Comment posted on GitLab PR:', data);
                     // Parse the reviews and iterate over them
                     const reviews = JSON.parse(data)[0]?.reviews || [];
+                    console.log("**********************************************");
+                    console.log(reviews);
+                    console.log("**********************************************");
                     for (const review of reviews) {
                       const commentBody = `${review.body}\n\n**File:** ${review.path}\n**Line:** ${review.line}`;
                       github.rest.issues.createComment({
