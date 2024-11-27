@@ -430,6 +430,22 @@ jobs:
                   })
                   .then(data => {
                     console.log('Comment posted on GitLab PR:', data);
+                    // Parse the reviews and iterate over them
+                    const reviews = JSON.parse(data)[0]?.reviews || [];
+                    for (const review of reviews) {
+                      const commentBody = `${review.body}\n\n**File:** ${review.path}\n**Line:** ${review.line}`;
+                      github.rest.issues.createComment({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: context.issue.number,
+                        body: commentBody,
+                      }).then(() => {
+                        console.log('Comment posted:', commentBody);
+                      }).catch(err => {
+                        console.error('Failed to post comment:', err);
+                      });
+                    }
+
                   })
                   .catch(error => {
                     console.error('Error making API call to GitLab:', error);
