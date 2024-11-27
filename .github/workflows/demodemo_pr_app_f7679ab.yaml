@@ -415,7 +415,7 @@ jobs:
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
-                      'Authorization': '${{ env.SERVICE_ACC_ACCESS_TOKEN }}' ',
+                      'Authorization': '${{ env.SERVICE_ACC_ACCESS_TOKEN }}',
                       'x-auth-by': 'sa',
                       'x-organization-id': '${{ env.PIPELINE_ORGANIZATION_ID }}',
                       'x-project-id': '${{ env.PIPELINE_PROJECT_ID }}',
