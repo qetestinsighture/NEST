@@ -431,7 +431,7 @@ jobs:
                   .then(data => {
                     console.log('Comment posted on GitLab PR:', data);
                     // Parse the reviews and iterate over them
-                    const reviews = JSON.parse(data)[0]?.reviews || [];
+                    const reviews = JSON.parse(data)?.reviews || [];
                     console.log("**********************************************");
                     console.log(reviews);
                     console.log("**********************************************");
