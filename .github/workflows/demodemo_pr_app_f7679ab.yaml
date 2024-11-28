@@ -422,68 +422,8 @@ jobs:
                     },
                     body: JSON.stringify({ diff: diffOutput }),
                   });
-                  const data = await response.json();
-                  console.log('AI Comments Endpoint Response:', data);
-                  # const reviews = data?.reviews || [];
-                  
-                  # const prData = await github.rest.pulls.get({
-                  #   owner: context.repo.owner,
-                  #   repo: context.repo.repo,
-                  #   pull_number: context.issue.number,
-                  # });
-                  # const commitId = prData.data.head.sha;
-                  # console.log('Commit ID:', commitId);
-                  # fetch(aiCommentsEndpointUrl, {
-                  #   method: 'POST',
-                  #   headers: {
-                  #     'Content-Type': 'application/json',
-                  #     'Authorization': '${{ env.SERVICE_ACC_ACCESS_TOKEN }}',
-                  #     'x-auth-by': 'sa',
-                  #     'x-organization-id': '${{ env.PIPELINE_ORGANIZATION_ID }}',
-                  #     'x-project-id': '${{ env.PIPELINE_PROJECT_ID }}',
-                  #     'x-trace-id': '${{ env.PIPELINE_TRACE_ID }}'
-                  #   },
-                  #   body: JSON.stringify({
-                  #     diff: diffOutput
-                  #   }),
-                  # })
-                  # .then(response => {
-                  #   return response.json();
-                  # })
-                  # .then(data => {
-                  #   console.log('Comment posted on GitLab PR:', data);
-                  #   // Parse the reviews and iterate over them
-                  #   const reviews = JSON.parse(data)?.reviews || [];
-                  #   let commitId = "";
-                  #   github.rest.pulls.get({
-                  #     owner: context.repo.owner,
-                  #     repo: context.repo.repo,
-                  #     pull_number: context.issue.number,
-                  #   }).then((data)=>{
-                  #     console.log('Comment data:', data);
-                  #   }).catch((err)=>{
-                  #    console.error('Failed to post comment:', err);
-                  #   });
-                    
-                  #   for (const review of reviews) {
-                  #     github.rest.pulls.createReviewComment({
-                  #       owner: context.repo.owner,
-                  #       repo: context.repo.repo,
-                  #       pull_number: context.issue.number,
-                  #       body: review.body,
-                  #       path: review.path,
-                  #       position: review.position,
-                  #       commit_id: commitId
-                  #     }).then(() => {
-                  #       console.log('Comment posted:', commentBody);
-                  #     }).catch(err => {
-                  #       console.error('Failed to post comment:', err);
-                  #     });
-                  #   }
-                  # })
-                  # .catch(error => {
-                  #   console.error('Error making API call to GitLab:', error);
-                  # });
+                  console.log('AI Comments Endpoint Response:', response);
+      
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
   _status-success:
     name: ' Status Success'
