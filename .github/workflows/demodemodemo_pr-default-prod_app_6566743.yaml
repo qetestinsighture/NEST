@@ -427,6 +427,7 @@ jobs:
                   const [jsonString] = parsedResponseBody;
                   const reviewObj = JSON.parse(jsonString);
                   const reviews = reviewObj?.reviews || [];
+                  console.log("reviews:",reviews);
                   const prData = await github.rest.pulls.get({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
