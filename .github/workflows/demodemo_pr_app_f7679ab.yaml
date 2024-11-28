@@ -437,12 +437,12 @@ jobs:
                       owner: context.repo.owner,
                       repo: context.repo.repo,
                       pull_number: context.issue.number,
-                    }).then(data => {
-                        console.log('Comment data:', data);
-                      }).catch(err => {
-                        console.error('Failed to post comment:', err);
+                    }).then((data)=>{
+                      console.log('Comment data:', data);
+                    }).catch((err)=>{
+                     console.error('Failed to post comment:', err);
                     });
-
+                    
                     for (const review of reviews) {
                       github.rest.pulls.createReviewComment({
                         owner: context.repo.owner,
