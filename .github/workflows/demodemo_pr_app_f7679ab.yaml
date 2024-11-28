@@ -422,8 +422,11 @@ jobs:
                     },
                     body: JSON.stringify({ diff: diffOutput }),
                   });
-                  console.log('AI Comments Endpoint Response:', response);
-      
+                const responseBody = await response.text();
+                console.log('Raw response body:', responseBody);
+                const sd = JSON.parse(responseBody);
+                console.log('Parsed data:', data);
+                
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
   _status-success:
     name: ' Status Success'
