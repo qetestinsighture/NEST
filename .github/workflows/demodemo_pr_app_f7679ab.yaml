@@ -424,7 +424,7 @@ jobs:
                   });
                 const responseBody = await response.text();
                 console.log('Raw response body:', responseBody);
-                const sd = JSON.parse(responseBody);
+                const data = JSON.parse(responseBody);
                 console.log('Parsed data:', data);
                 
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
