@@ -435,7 +435,26 @@ jobs:
                 });
                 const commitId = prData.data.head.sha;
                 console.log('Commit ID:', commitId);
-                
+                // Iterate through reviews and create review comments
+                for (const review of reviews) {
+                  try {
+                    await github.rest.pulls.createReviewComment({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      pull_number: context.issue.number,
+                      body: review.body,
+                      path: review.path,
+                      start_line: review.start_line,
+                      start_side: review.start_side,
+                      line: review.line,
+                      side: review.side,
+                      commit_id: commitId,
+                    });
+                    console.log(`Comment posted for ${review.path} at position ${review.position}`);
+                  } catch (err) {
+                    console.error(`Failed to post comment for ${review.path}:`, err);
+                  }
+                }                
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
   _status-success:
     name: ' Status Success'
