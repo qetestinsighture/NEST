@@ -426,7 +426,7 @@ jobs:
                 console.log('Raw response body:', responseBody);
                 const data = JSON.parse(responseBody);
                 console.log('Parsed data:', data);
-                const reviews = data?.reviews || [];
+                const reviews = data[0]?.reviews || [];
                 console.log('reviews data:', reviews);
                 // Fetch the pull request details to get commit_id
                 const prData = await github.rest.pulls.get({
