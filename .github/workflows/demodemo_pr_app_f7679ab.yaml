@@ -432,15 +432,19 @@ jobs:
                     console.log('Comment posted on GitLab PR:', data);
                     // Parse the reviews and iterate over them
                     const reviews = JSON.parse(data)?.reviews || [];
- 
+                    let commitId = "";
                     // Get pull request details to retrieve `commit_id`
                     const pullRequest = github.rest.pulls.get({
                       owner: context.repo.owner,
                       repo: context.repo.repo,
                       pull_number: context.issue.number,
-                    });
-                    const commitId = pullRequest.data.head.sha; // Latest commit SHA for the PR
-  
+                    }).then((data) => {
+                        console.log('Comment data:', data);
+                        # commitId = pullRequest.data.head.sha;
+                      }).catch(err => {
+                        console.error('Failed to post comment:', err);
+                      });
+
                     for (const review of reviews) {
                       github.rest.pulls.createReviewComment({
                         owner: context.repo.owner,
