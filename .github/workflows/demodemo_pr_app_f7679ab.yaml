@@ -410,7 +410,6 @@ jobs:
                   const fs = require('fs');
                   const diffOutput = fs.readFileSync('diff_output.txt', 'utf-8');
                   const aiCommentsEndpointUrl = '${{ env.AI_COMMENTS_ENDPOINT }}';
-                  // Fetch data from the AI comments endpoint
                   const response = await fetch(aiCommentsEndpointUrl, {
                     method: 'POST',
                     headers: {
@@ -425,16 +424,15 @@ jobs:
                   });
                   const data = await response.json();
                   console.log('AI Comments Endpoint Response:', data);
-                  const reviews = data?.reviews || [];
-
-                  // Fetch the pull request details to get commit_id
-                  const prData = await github.rest.pulls.get({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    pull_number: context.issue.number,
-                  });
-                  const commitId = prData.data.head.sha;
-                  console.log('Commit ID:', commitId);
+                  # const reviews = data?.reviews || [];
+                  
+                  # const prData = await github.rest.pulls.get({
+                  #   owner: context.repo.owner,
+                  #   repo: context.repo.repo,
+                  #   pull_number: context.issue.number,
+                  # });
+                  # const commitId = prData.data.head.sha;
+                  # console.log('Commit ID:', commitId);
                   # fetch(aiCommentsEndpointUrl, {
                   #   method: 'POST',
                   #   headers: {
