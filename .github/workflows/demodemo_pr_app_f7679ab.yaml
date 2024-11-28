@@ -422,42 +422,47 @@ jobs:
                     },
                     body: JSON.stringify({ diff: diffOutput }),
                   });
-                const responseBody = await response.text();
-                console.log('Raw response body:', responseBody);
-                const data = JSON.parse(responseBody);
-                console.log('Parsed data:', data);
-                const jsonString = data[0];
-                const dd=JSON.parse(jsonString);
-                const reviews = dd?.reviews || [];
-                console.log('reviews data:', reviews);
-                // Fetch the pull request details to get commit_id
-                const prData = await github.rest.pulls.get({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  pull_number: context.issue.number,
-                });
-                const commitId = prData.data.head.sha;
-                console.log('Commit ID:', commitId);
-                // Iterate through reviews and create review comments
-                for (const review of reviews) {
-                  try {
-                    await github.rest.pulls.createReviewComment({
-                      owner: context.repo.owner,
-                      repo: context.repo.repo,
-                      pull_number: context.issue.number,
-                      body: review.body,
-                      path: review.path,
-                      start_line: review.start_line,
-                      start_side: review.start_side,
-                      line: review.line,
-                      side: review.side,
-                      commit_id: commitId,
-                    });
-                    console.log(`Comment posted for ${review.path} at position ${review.position}`);
-                  } catch (err) {
-                    console.error(`Failed to post comment for ${review.path}:`, err);
-                  }
-                }                
+                  const responseBody = await response.text();
+                  console.log('Raw response body:', responseBody);
+                  const data = JSON.parse(responseBody);
+                  console.log('Parsed data:', data);
+                  const jsonString = data[0];
+                  const dd=JSON.parse(jsonString);
+                  const reviews = dd?.reviews || [];
+                  console.log('reviews data:', reviews);
+                  // Fetch the pull request details to get commit_id
+                  const prData = await github.rest.pulls.get({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    pull_number: context.issue.number,
+                  });
+                  const commitId = prData.data.head.sha;
+                  console.log('Commit ID:', commitId);
+                  // Iterate through reviews and create review comments
+                  for (const review of reviews) {
+                    try {
+                      const commentPayload = {
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        pull_number: context.issue.number,
+                        body: review.body,
+                        path: review.path,
+                        commit_id: commitId,
+                        side: review.side,
+                        start_side: review.start_side
+                      };
+                      if (review.start_line && review.start_line !== review.line) {
+                        commentPayload.start_line = review.start_line;
+                        commentPayload.line = review.line;
+                      } else {
+                        commentPayload.line = review.line;
+                      }
+                      await github.rest.pulls.createReviewComment(commentPayload);
+                      console.log(`Comment posted for ${review.path} at position ${review.position}`);
+                    } catch (err) {
+                      console.error(`Failed to post comment for ${review.path}:`, err);
+                    }
+                  }                
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
   _status-success:
     name: ' Status Success'
