@@ -448,6 +448,20 @@ jobs:
                 echo "FAILED :: $response"
               fi
               
+              if [ -f ".trivyignore" ]; then
+                # Uploading trivyignore file
+                trivyignoreResponse=$(curl -X POST -F 'file=@.trivyignore' -F 'provider=aws' -F 'resourceType=trivy-ignore' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/trivy-ignore-file/' -F 'pipelineRunId=$RUN_ID'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: multipart/form-data'  "${{ env.S3_UPLOAD_ENDPOINT }}")
+
+                if echo "$trivyignoreResponse" | grep -q '"success":true'; then
+                  echo "SUCCESS :: $trivyignoreResponse"
+                else
+                  echo "FAILED :: $trivyignoreResponse"
+                fi
+
+              else
+                echo ".trivyignore file not found. Skipping the upload."
+              fi
+              
         if: ${{ env.ARE_TRIVY_RESULTS_EVALUATED == 'true' }}
       - name: 'Run :: Check Pipeline Safety'
         run: |2-
