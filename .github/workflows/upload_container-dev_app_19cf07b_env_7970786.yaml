@@ -449,6 +449,13 @@ jobs:
                 echo "FAILED :: $response"
               fi
               
+              if [ -f .trivyignore ]; then
+                echo "file found."
+                cat .trivyignore
+              else
+                echo "SARIF file not found."
+              fi
+              
         if: ${{ env.ARE_TRIVY_RESULTS_EVALUATED == 'true' }}
       - name: 'Run :: Check Pipeline Safety'
         run: |2-
