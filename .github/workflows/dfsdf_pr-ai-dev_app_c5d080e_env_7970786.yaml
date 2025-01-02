@@ -152,7 +152,7 @@ jobs:
         run: |2-
 
                     file_content=$(cat "$FILE_PATH")
-                    payload=$(jq -n --arg fileName "$FILE_NAME" --arg fileContent "$file_content" --arg logs "${{ env.LOGS }} | @sh" '{"code_dict": {($fileName): $fileContent}, "error_log": $logs}')
+                    payload=$(jq -n --arg fileName "$FILE_NAME" --arg fileContent "$file_content" --arg logs '${{ env.LOGS }} | @sh' '{"code_dict": {($fileName): $fileContent}, "error_log": $logs}')
                     echo "payload: $payload"
             
                     echo "Starting Task"
