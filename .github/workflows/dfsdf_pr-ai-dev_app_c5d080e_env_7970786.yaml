@@ -92,7 +92,7 @@ jobs:
 
                     if ${{ env.LOGS != null }}; then
                       echo "Logs found..."
-                      echo "Logs: ${{ env.LOGS }}"
+                      echo 'Logs: ${{ env.LOGS }}'
                     else 
                       echo "Logs Not found to run the AI pipeline"
                       exit 1
