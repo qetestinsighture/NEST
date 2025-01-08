@@ -2,7 +2,7 @@ name: test-demo_pr-ai-dev_app_2641fab_env_7970786 Pipeline (Skyu Generated)
 'on':
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_5bae9411-4884-42b8-a4b3-b08c0c28c625
+    types: pipeline_ffe0d723-9e16-4491-9d63-45f42bd92a79
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.DEMO_TESTDEMO_PRAIDEV_APP_2641FAB_ENV_7970786}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
