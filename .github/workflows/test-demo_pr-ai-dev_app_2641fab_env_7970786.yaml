@@ -2,7 +2,7 @@ name: test-demo_pr-ai-dev_app_2641fab_env_7970786 Pipeline (Skyu Generated)
 'on':
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_af4acbf5-3aa7-4e38-bfbc-a4ec92fdee56
+    types: pipeline_48cbc23f-6de4-4bc0-8859-7112f0d23e5e
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.DEMO_TESTDEMO_PRAIDEV_APP_2641FAB_ENV_7970786}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -255,7 +255,7 @@ jobs:
         uses: repo-sync/pull-request@v2
         with:
           source_branch: fix-issue-${{ github.run_id }}
-          destination_branch: ${{ github.repository_default_branch }} || main
+          destination_branch: ${{ github.repository_default_branch || 'main' }}
           pr_title: Fix Issue-${{ github.run_id }}
           pr_body: ${{ steps.send-file.outputs.ai_commit_message }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
