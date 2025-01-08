@@ -123,14 +123,14 @@ jobs:
         id: send-logs
         env:
           LOGS: ${{ github.event.client_payload.logs }}
-          BRANCH: ${{ github.repository_default_branch }}
+          DEFAULT_BRANCH: ${{ github.repository_default_branch }}
           FILE_PATHS: ${{ steps.get-file-paths.outputs.file-paths }}
         run: |2-
 
                     payload=$(jq -n --arg logs '${{ env.LOGS }} | @sh' --arg file_paths "$FILE_PATHS" '{"error_message": $logs, "available_files": $file_paths}')
                     echo "payload: $payload"
                     echo "###############################################"
-                    echo ${{ github }}
+                    echo "$DEFAULT_BRANCH"
                     echo "###############################################"
             
                     response=$(curl -X POST -d "$payload"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: application/json'  "${{ env.AI_SUGGESTED_SOLUTION_EP }}/identify-files/")
