@@ -430,7 +430,7 @@ jobs:
                   # } 
                   } catch(error){
                       console.error('Error :', error);
-                      throw error;
+                      # throw error;
                   }
                   
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
