@@ -375,23 +375,28 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |2-
-                  try{
-                  const fs = require('fs');
-                  const diffOutput = fs.readFileSync('diff_output.txt', 'utf-8');
-                  const aiCommentsEndpointUrl = '${{ env.AI_COMMENTS_ENDPOINT }}';
-                  const response = await fetch(aiCommentsEndpointUrl, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `${{ env.SERVICE_ACC_ACCESS_TOKEN }}`,
-                      'x-auth-by': 'sa',
-                      'x-organization-id': `${{ env.PIPELINE_ORGANIZATION_ID }}`,
-                      'x-project-id': `${{ env.PIPELINE_PROJECT_ID }}`,
-                      'x-trace-id': `${{ env.PIPELINE_TRACE_ID }}`,
-                    },
-                    body: JSON.stringify({ diff: diffOutput }),
-                  });
-                  console.log(response);
+
+                  try {
+                    const fs = require('fs');
+                    const diffOutput = fs.readFileSync('diff_output.txt', 'utf-8');
+                    const aiCommentsEndpointUrl = '${{ env.AI_COMMENTS_ENDPOINT }}';
+                    const response = await fetch(aiCommentsEndpointUrl, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${{ env.SERVICE_ACC_ACCESS_TOKEN }}`,
+                        'x-auth-by': 'sa',
+                        'x-organization-id': `${{ env.PIPELINE_ORGANIZATION_ID }}`,
+                        'x-project-id': `${{ env.PIPELINE_PROJECT_ID }}`,
+                        'x-trace-id': `${{ env.PIPELINE_TRACE_ID }}`,
+                      },
+                      body: JSON.stringify({ diff: diffOutput }),
+                    });
+                    console.log(response);
+                  } catch(error){
+                      console.error('Error :', error);
+                      throw error;
+                  }
                   # const responseBody = await response.text();
                   # const parsedResponseBody = JSON.parse(responseBody);
                   # const [jsonString] = parsedResponseBody;
@@ -428,10 +433,7 @@ jobs:
                   #     throw err;
                   #   }
                   # } 
-                  } catch(error){
-                      console.error('Error :', error);
-                      # throw error;
-                  }
+              
                   
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
   build-and-scan:
