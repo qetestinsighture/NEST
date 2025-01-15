@@ -284,7 +284,8 @@ jobs:
           COMMIT_MESSAGE: ${{ github.event.client_payload.commitMessage }}
           COMMIT_TIME: ${{ github.event.head_commit.timestamp }}
         run: |2-
-
+              COMMIT_MESSAGES=$(gh api repos/${{ github.repository }}/commits/${{ env.COMMIT_ID }} --jq '.commit.message')
+              echo "Commit Message: $COMMIT_MESSAGES"
               echo "Pipeline Release Information"
               echo "////////////////////////////"
               echo "releaseId         : $RELEASE_ID"
