@@ -415,7 +415,7 @@ jobs:
                           const parsedResponseData = JSON.parse(responseDataText);
                           const { status , result } = parsedResponseData;
                           if(status==="failed"){
-                            throw New Error("Error occurred.");
+                            throw new Error("Error occurred.");
                           }else if(status!="completed"){
                             console.log("Task Processing...");
                             await new Promise(resolve=>setTimeOut(resolve,10000));
