@@ -408,7 +408,9 @@ jobs:
                           'x-trace-id': `${{ env.PIPELINE_TRACE_ID }}`,
                         }
                       });
-                      console.log(responseData);
+                      const responseDataText = await responseData.text();
+                      const parsedResponseData = JSON.parse(responseDataText);
+                      console.log(parsedResponseData);
                     } catch(error){
                       console.error('Error :', error);
                       throw error;
