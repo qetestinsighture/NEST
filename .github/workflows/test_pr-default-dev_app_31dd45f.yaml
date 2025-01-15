@@ -397,20 +397,71 @@ jobs:
                       const parsedResponseBody = JSON.parse(responseBody);
                       const taskId = parsedResponseBody?.task_id
                       console.log(taskId);
-                      const responseData = await fetch(`${aiCommentsEndpointUrl}/${taskId}`, {
-                        method: 'GET',
-                        headers: {
-                          'Content-Type': 'application/json',
-                          'Authorization': `${{ env.SERVICE_ACC_ACCESS_TOKEN }}`,
-                          'x-auth-by': 'sa',
-                          'x-organization-id': `${{ env.PIPELINE_ORGANIZATION_ID }}`,
-                          'x-project-id': `${{ env.PIPELINE_PROJECT_ID }}`,
-                          'x-trace-id': `${{ env.PIPELINE_TRACE_ID }}`,
+                      let reviews = [];
+                      async function pollResults(){
+                        try{
+                          const responseData = await fetch(`${aiCommentsEndpointUrl}/${taskId}`, {
+                            method: 'GET',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              'Authorization': `${{ env.SERVICE_ACC_ACCESS_TOKEN }}`,
+                              'x-auth-by': 'sa',
+                              'x-organization-id': `${{ env.PIPELINE_ORGANIZATION_ID }}`,
+                              'x-project-id': `${{ env.PIPELINE_PROJECT_ID }}`,
+                              'x-trace-id': `${{ env.PIPELINE_TRACE_ID }}`,
+                            }
+                          });
+                          const responseDataText = await responseData.text();
+                          const parsedResponseData = JSON.parse(responseDataText);
+                          const { status , result } = parsedResponseData;
+                          if(status==="failed"){
+                            throw New Error("Error occurred.");
+                          }else if(status!="completed"){
+                            console.log("Task Processing...");
+                            await new Promise(resolve=>setTimeOut(resolve,10000));
+                            await pollResults();
+                          }else{
+                            console.log("Task done... Proceeding");
+                            reviews = result?.reviews;
+                          }
+                          console.log(parsedResponseData);
+                        }catch(error){
+                          console.log("error:",error)
+                          throw error;
                         }
+                      }
+                      await pollResults();
+                      const prData = await github.rest.pulls.get({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        pull_number: context.issue.number,
                       });
-                      const responseDataText = await responseData.text();
-                      const parsedResponseData = JSON.parse(responseDataText);
-                      console.log(parsedResponseData);
+                      const commitId = prData.data.head.sha;
+                      for (const review of reviews) {
+                        try {
+                          const commentPayload = {
+                            owner: context.repo.owner,
+                            repo: context.repo.repo,
+                            pull_number: context.issue.number,
+                            body: review.body,
+                            path: review.path,
+                            commit_id: commitId,
+                            side: review.side,
+                            start_side: review.start_side
+                          }; 
+                          if (review.start_line && review.start_line !== review.line) {
+                            commentPayload.start_line = review.start_line;
+                            commentPayload.line = review.line;
+                          } else {
+                            commentPayload.line = review.line;
+                          }
+                          await github.rest.pulls.createReviewComment(commentPayload);
+                          console.log('Comment posted successfully.');
+                        } catch(err) {
+                          console.error('Failed to post comment:', err);
+                          throw err;
+                        }
+                      } 
                     } catch(error){
                       console.error('Error :', error);
                       throw error;
