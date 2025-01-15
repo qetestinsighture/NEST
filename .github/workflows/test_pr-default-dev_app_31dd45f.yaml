@@ -429,10 +429,10 @@ jobs:
                       #     throw err;
                       #   }
                       # } 
-                    } catch(error){
-                        console.error('Error :', error);
-                        throw error;
-                    }
+                      } catch(error){
+                          console.error('Error :', error);
+                          throw error;
+                      }
               
               
                   
