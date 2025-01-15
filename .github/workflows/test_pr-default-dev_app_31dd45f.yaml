@@ -422,7 +422,7 @@ jobs:
                             await pollResults();
                           }else{
                             console.log("Task done... Proceeding");
-                            reviews = result?.reviews;
+                            reviews = JSON.parse(result)?.reviews;
                           }
                           console.log(parsedResponseData);
                         }catch(error){
