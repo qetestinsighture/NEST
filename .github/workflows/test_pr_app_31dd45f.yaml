@@ -417,7 +417,7 @@ jobs:
                           throw new Error("Error occurred while polling.");
                         } else if(status != "completed") {
                           console.log("Task Processing...");
-                          await new Promise(resolve=>setTimeOut(resolve,10000));
+                          await new Promise(resolve => setTimeout(resolve,10000));
                           await pollResults();
                         } else {
                           console.log("Task done... Proceeding");
@@ -434,6 +434,8 @@ jobs:
                       repo: context.repo.repo,
                       pull_number: context.issue.number,
                     });
+                    const successReviews = [];
+                    const failedReviews = [];        
                     const commitId = prData.data.head.sha;
                     for (const review of reviews) {
                       try {
@@ -455,10 +457,17 @@ jobs:
                         }
                         await github.rest.pulls.createReviewComment(commentPayload);
                         console.log('Comment posted successfully.');
+                        successReviews.push(review);
                       } catch(err) {
                         console.error('Failed to post comment:', err);
+                        failedReviews.push({
+                          review,
+                          error: err?.response?.data
+                        });
                       }
-                    }  
+                    }
+                    console.log('Successfully added reviews:', successReviews);
+                    console.log('Failed reviews:', failedReviews)          
                   } catch(error) {
                     console.error("Error occurred while ai pr review process:", error);
                     throw error;
