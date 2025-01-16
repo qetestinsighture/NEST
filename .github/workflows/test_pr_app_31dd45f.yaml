@@ -300,7 +300,7 @@ jobs:
               echo "containerName     : ${{ env.DEPLOYMENT_CONTAINER_NAME }}"
               echo "imageRegistryURL  : ${{ env.IMAGE_NAME }}",
               # Storing Release Information for Deployment
-              response=$(curl -X POST -d "releaseId=$RELEASE_ID&pipelineId=$PIPELINE_ID&pipelineRunId=$RUN_ID&versionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&applicationId=${{ github.event.client_payload.releaseData.appId }}&credentialId=${{ env.PIPELINE_CREDENTIAL_ID }}&userName=$USER_NAME&repositoryName=$REPOSITORY&commitId=${{ env.COMMIT_ID }}&commitData[commitHash]=${{ env.COMMIT_ID }}&commitData[commitAvatar]=https://github.com/$COMMIT_USER.png&commitData[commitTime]=$COMMIT_TIME&commitData[commitMessage]=$COMMIT_MESSAGE&commitData[commitUser]=$COMMIT_USER&shouldDeploy=${{ env.DEPLOY_STEP_SHOULD_DEPLOY }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&imageRegistryURL=${{ env.IMAGE_NAME }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/release/pipeline")
+              response=$(curl -X POST -d "releaseId=$RELEASE_ID&pipelineId=$PIPELINE_ID&pipelineRunId=$RUN_ID&versionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&applicationId=${{ github.event.client_payload.releaseData.appId }}&credentialId=${{ env.PIPELINE_CREDENTIAL_ID }}&userName=$USER_NAME&repositoryName=$REPOSITORY&commitId=${{ env.COMMIT_ID }}&commitData[commitHash]=${{ env.COMMIT_ID }}&commitData[commitAvatar]=https://github.com/$COMMIT_USER.png&commitData[commitTime]=$COMMIT_TIME&commitData[commitMessage]=$COMMIT_MESSAGE&commitData[commitUser]=$COMMIT_USER&shouldDeploy=${{ env.DEPLOY_STEP_SHOULD_DEPLOY }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&imageRegistryURL=${{ env.IMAGE_NAME }}&externalRepo[repositoryName]=${{ github.event.client_payload.cloneData.externalRepoName }}&externalRepo[credentialId]=${{ github.event.client_payload.externalRepo.externalRepoCredId }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/release/pipeline")
               if echo "$response" | grep -q '"success":true'; then
                 echo "SUCCESS :: $response"
               else
@@ -467,7 +467,7 @@ jobs:
                       }
                     }
                     console.log('Successfully added reviews:', successReviews);
-                    console.log('Failed reviews:', failedReviews)          
+                    console.log('Failed reviews:', failedReviews);          
                   } catch(error) {
                     console.error("Error occurred while ai pr review process:", error);
                     throw error;
