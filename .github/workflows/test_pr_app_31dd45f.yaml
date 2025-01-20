@@ -379,10 +379,10 @@ jobs:
                   try {
                     const fs = require('fs');
                     const diffOutput = fs.readFileSync('diff_output.txt', 'utf-8');
-                    consol.log("##############################################");
-                    consol.log(diffOutput);
-                    consol.log(JSON.stringify({ diff: diffOutput }));
-                    consol.log("##############################################");
+                    console.log("##############################################");
+                    console.log(diffOutput);
+                    console.log(JSON.stringify({ diff: diffOutput }));
+                    console.log("##############################################");
                     const aiCommentsEndpointUrl = '${{ env.AI_COMMENTS_ENDPOINT }}';
                     const taskIdResponse = await fetch(aiCommentsEndpointUrl, {
                       method: 'POST',
