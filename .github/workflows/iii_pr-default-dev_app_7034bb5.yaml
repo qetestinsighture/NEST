@@ -377,7 +377,7 @@ jobs:
                   try {
                     const fs = require('fs');
                     const diffOutput = fs.readFileSync('diff_output.txt', 'utf-8');
-                    const aiCommentsEndpointUrl = '${{ env.AI_COMMENTS_ENDPOINT }}';
+                    const aiCommentsEndpointUrl = '${{ env.AI_COMMENTS_ENDPOINT }}sadas';
                     const taskIdResponse = await fetch(aiCommentsEndpointUrl, {
                       method: 'POST',
                       headers: {
