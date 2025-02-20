@@ -377,7 +377,7 @@ jobs:
                   try {
                     const fs = require('fs');
                     const diffOutput = fs.readFileSync('diff_output.txt', 'utf-8');
-                    const aiCommentsEndpointUrl = '${{ env.AI_COMMENTS_ENDPOINT }}fdg';
+                    const aiCommentsEndpointUrl = '${{ env.AI_COMMENTS_ENDPOINT }}';
                     const taskIdResponse = await fetch(aiCommentsEndpointUrl, {
                       method: 'POST',
                       headers: {
@@ -394,7 +394,7 @@ jobs:
                     const taskIdBody = JSON.parse(taskIdResponseBody);
                     const taskId = taskIdBody?.task_id;
                     let reviews = [];
-                    const pollingEndpoint = `${{ env.AI_COMMENTS_ENDPOINT }}/${taskId}`;
+                    const pollingEndpoint = `${{ env.AI_COMMENTS_ENDPOINT }}/sdfsdf/${taskId}`;
                     async function pollResults(){
                       try {
                         const reviewsResponse = await fetch(pollingEndpoint, {
