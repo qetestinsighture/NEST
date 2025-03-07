@@ -665,7 +665,6 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         env:
           COMMIT_ID: ${{ github.event.client_payload.commitId }}
-          COMMIT_MSG: ${{ github.event.head_commit.message }}
           BRANCH_NAME: ${{ github.event.client_payload.branchName }}
         if: >-
           ${{ github.event.client_payload.commitId != null ||
@@ -674,7 +673,6 @@ jobs:
 
               echo "Starting the checkout process..."
               git fetch --all
-              echo "before : $COMMIT_MSG"
               if [ -n "$COMMIT_ID" ]; then
                 echo "Commit ID provided: $COMMIT_ID"
                 git checkout $COMMIT_ID || true
@@ -683,7 +681,6 @@ jobs:
                 echo "Branch name provided: $BRANCH_NAME"
                 git checkout $BRANCH_NAME || true
                 echo "Checked out to branch: $BRANCH_NAME"
-                echo "adter : $COMMIT_MSG"
                 #Updating the commit Id
                 ACTUAL_COMMIT_ID=$(git rev-parse HEAD)
                 echo "Changing CommitId: $ACTUAL_COMMIT_ID"
@@ -711,7 +708,7 @@ jobs:
             ${{ github.event.head_commit.message ||
             github.event.client_payload.commitMessage }}
         run: |2-
-              echo $COMMIT_MESSAGE
+              echo "${{ github.event.head_commit }}"
               response=$(curl -X PATCH -d "imageRegistryURL=${{ env.IMAGE_NAME }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.COMMIT_ID }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&shouldDeploy=${{env.DEPLOY_STEP_SHOULD_DEPLOY}}&pipelineRunId=$RUN_ID&commitDetails[commitHash]=${{ env.COMMIT_ID }}&commitDetails[commitAvatar]=https://github.com/$COMMIT_USER.png&commitDetails[commitTime]=$COMMIT_TIME&commitDetails[commitMessage]=$COMMIT_MESSAGE&commitDetails[commitUser]=$COMMIT_USER"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.DEPLOYMENT_ENDPOINT }}")
               
               status_code=$?
