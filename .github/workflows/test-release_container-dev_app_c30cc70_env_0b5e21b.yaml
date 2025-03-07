@@ -665,7 +665,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         env:
           COMMIT_ID: ${{ github.event.client_payload.commitId }}
-          COMMIT_MSG: ${{ github.event.client_payload.message }}
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
           BRANCH_NAME: ${{ github.event.client_payload.branchName }}
         if: >-
           ${{ github.event.client_payload.commitId != null ||
