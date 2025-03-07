@@ -709,7 +709,7 @@ jobs:
             ${{ github.event.head_commit.message ||
             github.event.client_payload.commitMessage }}
         run: |2-
-              
+              eco $COMMIT_MESSAGE
               response=$(curl -X PATCH -d "imageRegistryURL=${{ env.IMAGE_NAME }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.COMMIT_ID }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&shouldDeploy=${{env.DEPLOY_STEP_SHOULD_DEPLOY}}&pipelineRunId=$RUN_ID&commitDetails[commitHash]=${{ env.COMMIT_ID }}&commitDetails[commitAvatar]=https://github.com/$COMMIT_USER.png&commitDetails[commitTime]=$COMMIT_TIME&commitDetails[commitMessage]=$COMMIT_MESSAGE&commitDetails[commitUser]=$COMMIT_USER"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.DEPLOYMENT_ENDPOINT }}")
               
               status_code=$?
