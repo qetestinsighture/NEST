@@ -1,13 +1,5 @@
 name: service-test_container-dev_app_41490b9_env_1fded8c Pipeline (Skyu Generated)
 'on':
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - .github/workflows/**
-      - .trivyignore
-      - Readme.md
-      - README.md
   workflow_dispatch: {}
   repository_dispatch:
     types: pipeline_1d5e9b0f-61be-4a4e-aa9f-1f81a34be63d
@@ -80,7 +72,7 @@ jobs:
              
                   if jq -e '.Results | map(select(.Vulnerabilities)) | length > 0' trivy_results.min.json >/dev/null; then
                     echo "Vulnerabilities detected!"
-                    jq '.Results[] | {Target: .Target, Vulnerabilities: .Vulnerabilities[] | {ID: .VulnerabilityID, Severity: .Severity, Description: .Description}}' trivy_results.min.json
+                    jq '.Results[] | select(.Vulnerabilities?) | {Target: .Target, Vulnerabilities: .Vulnerabilities[] | {ID: .VulnerabilityID, Severity: .Severity, Description: .Description}}' trivy_results.min.json
                     exit 1
                   fi
                   
@@ -738,6 +730,7 @@ jobs:
             
     needs:
       - build-and-push
+      - _status_testing
     permissions: write-all
     if: >-
       needs.build-and-push.outputs.stepsCanProceed == 'true' &&
