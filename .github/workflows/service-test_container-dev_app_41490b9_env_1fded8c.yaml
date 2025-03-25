@@ -337,6 +337,23 @@ jobs:
           COMMIT_TIME: ${{ github.event.head_commit.timestamp }}
         run: |2-
 
+              echo "////////////////////////////"
+              echo "Project Release Information"
+              echo "////////////////////////////"
+              echo "Project Release Tag  : ${{ github.event.client_payload.releaseData.projectReleaseData.releaseTag }}"
+              echo "Previous Commit ID   : ${{ github.event.client_payload.releaseData.projectReleaseData.preCommitId }}"
+              echo "New Commit ID        : ${{ github.event.client_payload.releaseData.projectReleaseData.newCommitId }}"
+              echo "From                 : ${{ github.event.client_payload.releaseData.projectReleaseData.envFrom }}"
+              echo "To                   : ${{ github.event.client_payload.releaseData.projectReleaseData.envTo }}"
+
+              echo "////////////////////////////"
+              echo "Application Release Information"
+              echo "////////////////////////////"
+              echo "Tag        : ${{ github.event.client_payload.releaseData.tag }}"
+              echo "Title      : ${{ github.event.client_payload.releaseData.title }}"
+
+
+              echo "////////////////////////////"
               echo "Pipeline Release Information"
               echo "////////////////////////////"
               echo "releaseId         : $RELEASE_ID"
