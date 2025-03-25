@@ -346,23 +346,28 @@ jobs:
           COMMIT_USER: ${{ github.event.head_commit.author.name }}
           COMMIT_MESSAGE: ${{ github.event.client_payload.commitMessage }}
           COMMIT_TIME: ${{ github.event.head_commit.timestamp }}
+          PROJECT_RELEASE_DATA: >-
+            ${{
+            toJson(github.event.client_payload.releaseData.projectReleaseData)
+            }}
         run: |2-
 
-              if [[ -n "${{ github.event.client_payload.releaseData.projectReleaseData }}" ]]; then
+              project_release_data=''
+              if [[ "$PROJECT_RELEASE_DATA" != "{}" && -n "$PROJECT_RELEASE_DATA" ]]; then
                 echo "////////////////////////////"
                 echo "Project Release Information"
                 echo "////////////////////////////"
-                echo "Project Release Tag  : ${{ github.event.client_payload.releaseData.projectReleaseData.releaseTag }}"
-                echo "Previous Commit ID   : ${{ github.event.client_payload.releaseData.projectReleaseData.preCommitId }}"
-                echo "New Commit ID        : ${{ github.event.client_payload.releaseData.projectReleaseData.newCommitId }}"
-                echo "From                 : ${{ github.event.client_payload.releaseData.projectReleaseData.envFrom }}"
-                echo "To                   : ${{ github.event.client_payload.releaseData.projectReleaseData.envTo }}"
+                echo "Project Release Tag  : $PROJECT_RELEASE_DATA.releaseTag"
+                echo "Previous Commit ID   : $PROJECT_RELEASE_DATA.preCommitId"
+                echo "New Commit ID        : $PROJECT_RELEASE_DATA.newCommitId"
+                echo "From                 : $PROJECT_RELEASE_DATA.envFrom"
+                echo "To                   : $PROJECT_RELEASE_DATA.envTo"
               fi
               echo "////////////////////////////"
               echo "Application Release Information"
               echo "////////////////////////////"
-              echo "Tag        : ${{ github.event.client_payload.releaseData.tag }}"
-              echo "Title      : ${{ github.event.client_payload.releaseData.title }}"
+              echo "Tag        : $PROJECT_RELEASE_DATA.tag"
+              echo "Title      : $PROJECT_RELEASE_DATA.title"
 
 
               echo "////////////////////////////"
