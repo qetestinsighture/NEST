@@ -352,7 +352,6 @@ jobs:
             }}
         run: |2-
 
-              project_release_data=''
               if [[ "$PROJECT_RELEASE_DATA" != "{}" && -n "$PROJECT_RELEASE_DATA" ]]; then
                 echo "////////////////////////////"
                 echo "Project Release Information"
@@ -363,6 +362,7 @@ jobs:
                 echo "From                 : $PROJECT_RELEASE_DATA.envFrom"
                 echo "To                   : $PROJECT_RELEASE_DATA.envTo"
               fi
+
               echo "////////////////////////////"
               echo "Application Release Information"
               echo "////////////////////////////"
