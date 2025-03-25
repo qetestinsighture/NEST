@@ -356,18 +356,20 @@ jobs:
                 echo "////////////////////////////"
                 echo "Project Release Information"
                 echo "////////////////////////////"
-                echo "Project Release Tag  : $PROJECT_RELEASE_DATA.releaseTag"
-                echo "Previous Commit ID   : $PROJECT_RELEASE_DATA.preCommitId"
-                echo "New Commit ID        : $PROJECT_RELEASE_DATA.newCommitId"
-                echo "From                 : $PROJECT_RELEASE_DATA.envFrom"
-                echo "To                   : $PROJECT_RELEASE_DATA.envTo"
+                echo "Project Release Tag  : $(echo "$PROJECT_RELEASE_DATA" | jq -r '.releaseTag')"
+                echo "Previous Commit ID   : $(echo "$PROJECT_RELEASE_DATA" | jq -r '.preCommitId')"
+                echo "New Commit ID        : $(echo "$PROJECT_RELEASE_DATA" | jq -r '.newCommitId')"
+                echo "From                 : $(echo "$PROJECT_RELEASE_DATA" | jq -r '.envFrom')"
+                echo "To                   : $(echo "$PROJECT_RELEASE_DATA" | jq -r '.envTo')"
               fi
-
-              echo "////////////////////////////"
-              echo "Application Release Information"
-              echo "////////////////////////////"
-              echo "Tag        : $PROJECT_RELEASE_DATA.tag"
-              echo "Title      : $PROJECT_RELEASE_DATA.title"
+              
+              if [[ -n "${{ github.event.client_payload.releaseData.tag }}" ]]; then
+                echo "////////////////////////////"
+                echo "Application Release Information"
+                echo "////////////////////////////"
+                echo "Tag        : ${{ github.event.client_payload.releaseData.tag }}"
+                echo "Title      : ${{ github.event.client_payload.releaseData.title }}"
+              fi
 
 
               echo "////////////////////////////"
