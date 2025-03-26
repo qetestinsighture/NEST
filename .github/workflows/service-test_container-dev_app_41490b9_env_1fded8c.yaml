@@ -1,13 +1,5 @@
 name: service-test_container-dev_app_41490b9_env_1fded8c Pipeline (Skyu Generated)
 'on':
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - .github/workflows/**
-      - .trivyignore
-      - Readme.md
-      - README.md
   workflow_dispatch: {}
   repository_dispatch:
     types: pipeline_1d5e9b0f-61be-4a4e-aa9f-1f81a34be63d
