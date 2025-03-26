@@ -1,11 +1,8 @@
-name: >-
-  service-test_container-staging_app_41490b9_env_32d4849 Pipeline (Skyu
-  Generated)
+name: test_container-prod_app_34b567e_env_6c5736f Pipeline (Skyu Generated)
 'on':
   push:
-    branches:
-      - staging
-      - release/*
+    tags:
+      - v*
     paths-ignore:
       - .github/workflows/**
       - .trivyignore
@@ -13,9 +10,9 @@ name: >-
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_858cbd1a-b637-4e18-b284-56a9f59c8cf3
+    types: pipeline_1fed6231-3ecb-408f-8edd-192f3d3f5eda
 env:
-  ENCODED_PIPELINE_SECRET: ${{secrets.DEMO_SERVICETEST_CONTAINERSTAGING_APP_41490B9_ENV_32D4849}}
+  ENCODED_PIPELINE_SECRET: ${{secrets.DEMO_TEST_CONTAINERPROD_APP_34B567E_ENV_6C5736F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
   BRANCH_NAME: >-
     ${{github.event.client_payload.branchName || github.event.branch ||
@@ -766,7 +763,6 @@ jobs:
             
     needs:
       - build-and-push
-      - _status_testing
     permissions: write-all
     if: >-
       needs.build-and-push.outputs.stepsCanProceed == 'true' &&
