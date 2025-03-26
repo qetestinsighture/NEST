@@ -1,4 +1,4 @@
-# Use a single base image for both build and productionsfdfdfsfdsdsfss
+# Use a single base image for both build and test
 FROM node:18-alpine AS build
 
 # Create app directory
