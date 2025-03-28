@@ -234,12 +234,20 @@ jobs:
         id: decode_secrets
         run: |2-
 
+              echo "::add-mask::${{ env.MAX_ITERATION }}"
+              echo "::add-mask::${{ env.BASE_CONTAINER_IMAGE }}"
+              echo "::add-mask::${{ env.TARGET_BRANCH }}"
+              echo "::add-mask::${{ env.PAT_TOKEN }}"
+              echo "::add-mask::${{ env.PAT_USERNAME }}"
+              echo "::add-mask::${{ env.LLM_API_KEY }}"
+              
               echo "aiAgentMaxIterations=${{ env.MAX_ITERATION }}" >> $GITHUB_OUTPUT
               echo "aiAgentBaseContainerImage=${{ env.BASE_CONTAINER_IMAGE }}" >> $GITHUB_OUTPUT
               echo "aiAgentTargetBranch=${{ env.TARGET_BRANCH }}" >> $GITHUB_OUTPUT
               echo "patToken=${{ env.PAT_TOKEN }}" >> $GITHUB_OUTPUT
               echo "patUserName=${{ env.PAT_USERNAME }}" >> $GITHUB_OUTPUT
               echo "llmApiKey=${{ env.LLM_API_KEY }}" >> $GITHUB_OUTPUT
+
               
     needs:
       - _status_testing
