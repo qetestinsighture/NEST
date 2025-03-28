@@ -177,7 +177,6 @@ jobs:
               
     needs:
       - _status-pending
-      - code-scan
     permissions: write-all
     runs-on: ubuntu-latest
   set-env-values:
@@ -380,4 +379,3 @@ jobs:
       PAT_TOKEN: ${{ needs.set-env-values.outputs.aiAgentMaxIterations }}
       PAT_USERNAME: ${{ needs.set-env-values.outputs.aiAgentMaxIterations  }}
       LLM_API_KEY: ${{ needs.set-env-values.outputs.llmApiKey }}
-    runs-on: ubuntu-latest
