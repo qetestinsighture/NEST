@@ -231,19 +231,25 @@ jobs:
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
       - name: 'Run :: Set Env Values'
+        id: decode_secrets
         run: |2-
 
-              echo "SUCCESS"
+              echo "aiAgentMaxIterations=${{ env.MAX_ITERATION }}" >> $GITHUB_OUTPUT
+              echo "aiAgentBaseContainerImage=${{ env.BASE_CONTAINER_IMAGE }}" >> $GITHUB_OUTPUT
+              echo "aiAgentTargetBranch=${{ env.TARGET_BRANCH }}" >> $GITHUB_OUTPUT
+              echo "patToken=${{ env.PAT_TOKEN }}" >> $GITHUB_OUTPUT
+              echo "patUserName=${{ env.PAT_USERNAME }}" >> $GITHUB_OUTPUT
+              echo "llmApiKey=${{ env.LLM_API_KEY }}" >> $GITHUB_OUTPUT
               
     needs:
       - _status_testing
     outputs:
-      aiAgentMaxIterations: ${{ env.MAX_ITERATION }}
-      aiAgentBaseContainerImage: ${{ env.MAX_ITERATION }}
-      aiAgentTargetBranch: ${{ env.MAX_ITERATION }}
-      patToken: ${{ env.MAX_ITERATION }}
-      patUserName: ${{ env.MAX_ITERATION }}
-      llmApiKey: ${{ env.MAX_ITERATION }}
+      aiAgentMaxIterations: ${{ steps.decode_secrets.outputs.aiAgentMaxIterations }}
+      aiAgentBaseContainerImage: ${{ steps.decode_secrets.outputs.aiAgentBaseContainerImage }}
+      aiAgentTargetBranch: ${{ steps.decode_secrets.outputs.aiAgentTargetBranch }}
+      patToken: ${{ steps.decode_secrets.outputs.patToken }}
+      patUserName: ${{ steps.decode_secrets.outputs.patUserName }}
+      llmApiKey: ${{ steps.decode_secrets.outputs.llmApiKey }}
     permissions: write-all
     runs-on: ubuntu-latest
   _status-success:
