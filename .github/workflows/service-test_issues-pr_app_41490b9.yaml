@@ -232,22 +232,20 @@ jobs:
                 
       - name: 'Run :: Set Env Values'
         id: decode_secrets
+        env:
+          MAX_ITERATION: ${{ env.MAX_ITERATION }}
+          BASE_CONTAINER_IMAGE: ${{ env.BASE_CONTAINER_IMAGE }}
+          TARGET_BRANCH: ${{ env.TARGET_BRANCH }}
+          PAT_TOKEN: ${{ env.PAT_TOKEN }}
+          PAT_USERNAME: ${{ env.PAT_USERNAME }}
+          LLM_API_KEY: ${{ env.LLM_API_KEY }}
         run: |2-
-
-              echo "::add-mask::${{ env.MAX_ITERATION }}"
-              echo "::add-mask::${{ env.BASE_CONTAINER_IMAGE }}"
-              echo "::add-mask::${{ env.TARGET_BRANCH }}"
-              echo "::add-mask::${{ env.PAT_TOKEN }}"
-              echo "::add-mask::${{ env.PAT_USERNAME }}"
-              echo "::add-mask::${{ env.LLM_API_KEY }}"
-              
-              echo "aiAgentMaxIterations=${{ env.MAX_ITERATION }}" >> $GITHUB_OUTPUT
-              echo "aiAgentBaseContainerImage=${{ env.BASE_CONTAINER_IMAGE }}" >> $GITHUB_OUTPUT
-              echo "aiAgentTargetBranch=${{ env.TARGET_BRANCH }}" >> $GITHUB_OUTPUT
-              echo "patToken=${{ env.PAT_TOKEN }}" >> $GITHUB_OUTPUT
-              echo "patUserName=${{ env.PAT_USERNAME }}" >> $GITHUB_OUTPUT
-              echo "llmApiKey=${{ env.LLM_API_KEY }}" >> $GITHUB_OUTPUT
-
+              echo "aiAgentMaxIterations=$(echo $MAX_ITERATION | base64 -w0 | base64 -w0)" >> $GITHUB_OUTPUT
+              echo "aiAgentBaseContainerImage=$(echo $BASE_CONTAINER_IMAGE | base64 -w0 | base64 -w0)" >> $GITHUB_OUTPUT
+              echo "aiAgentTargetBranch=$(echo $TARGET_BRANCH | base64 -w0 | base64 -w0)" >> $GITHUB_OUTPUT
+              echo "patToken=$(echo $PAT_TOKEN | base64 -w0 | base64 -w0)" >> $GITHUB_OUTPUT
+              echo "patUserName=$(echo $PAT_USERNAME | base64 -w0 | base64 -w0)" >> $GITHUB_OUTPUT
+              echo "llmApiKey=$(echo $LLM_API_KEY | base64 -w0 | base64 -w0)" >> $GITHUB_OUTPUT
               
     needs:
       - _status_testing
