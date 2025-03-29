@@ -454,6 +454,7 @@ jobs:
     needs:
       - set-env-values
       - _status_testing
+      - decode-env-values
     permissions:
       contents: write
       pull-requests: write
