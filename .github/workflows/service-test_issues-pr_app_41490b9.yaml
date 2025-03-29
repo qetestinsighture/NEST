@@ -180,7 +180,6 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
   set-env-values:
-    name: set-env-values
     steps:
       - name: 'Run :: Start'
         run: |2-
@@ -256,6 +255,91 @@ jobs:
       patToken: ${{ steps.decode_secrets.outputs.patToken }}
       patUserName: ${{ steps.decode_secrets.outputs.patUserName }}
       llmApiKey: ${{ steps.decode_secrets.outputs.llmApiKey }}
+    permissions: write-all
+    runs-on: ubuntu-latest
+  decode-env-values:
+    name: decode-env-values
+    steps:
+      - name: 'Run :: Start'
+        run: |2-
+
+              echo " Starting GitHub Action!" && 
+              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
+              
+      - name: 'Run :: Checkout repository'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: 'Run :: Checkout Specific Commit'
+        env:
+          COMMIT_ID: ${{ github.event.client_payload.commitId }}
+          BRANCH_NAME: ${{ github.event.client_payload.branchName }}
+        if: >-
+          ${{ github.event.client_payload.commitId != null ||
+          github.event.client_payload.branchName != null }}
+        run: |2-
+
+              echo "Starting the checkout process..."
+              git fetch --all
+              if [ -n "$COMMIT_ID" ]; then
+                echo "Commit ID provided: $COMMIT_ID"
+                git checkout $COMMIT_ID || true
+                echo "Checked out to commit ID: $COMMIT_ID"
+              elif [ -n "$BRANCH_NAME" ]; then
+                echo "Branch name provided: $BRANCH_NAME"
+                git checkout $BRANCH_NAME || true
+                echo "Checked out to branch: $BRANCH_NAME"
+
+                #Updating the commit Id
+                ACTUAL_COMMIT_ID=$(git rev-parse HEAD)
+                echo "Changing CommitId: $ACTUAL_COMMIT_ID"
+                echo "COMMIT_ID=$ACTUAL_COMMIT_ID" >> $GITHUB_ENV
+              else
+                echo "Skipping checkout..."
+              fi
+            
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Set Env Values'
+        run: |2-
+              decoded_aiAgentMaxIterations=$(echo '${{ needs.decode-env-values.outputs.aiAgentMaxIterations }}' | base64 -di | base64 -di)
+              echo "::add-mask::$decoded_aiAgentMaxIterations"
+              echo "decodedAiAgentMaxIterations=$decoded_aiAgentMaxIterations" >> $GITHUB_OUTPUT
+
+              decoded_aiAgentBaseContainerImage=$(echo '${{ needs.decode-env-values.outputs.aiAgentBaseContainerImage }}' | base64 -di | base64 -di)
+              echo "::add-mask::$decoded_aiAgentBaseContainerImage"
+              echo "decodedAiAgentBaseContainerImage=$decoded_aiAgentBaseContainerImage" >> $GITHUB_OUTPUT
+              
+              decoded_aiAgentTargetBranch=$(echo '${{ needs.decode-env-values.outputs.aiAgentTargetBranch }}' | base64 -di | base64 -di)
+              echo "::add-mask::$decoded_aiAgentTargetBranch"
+              echo "decodedAiAgentTargetBranch=$decoded_aiAgentTargetBranch" >> $GITHUB_OUTPUT
+              
+              decoded_patToken=$(echo '${{ needs.decode-env-values.outputs.patToken }}' | base64 -di | base64 -di)
+              echo "::add-mask::$decoded_patToken"
+              echo "decodedPatToken=$decoded_patToken" >> $GITHUB_OUTPUT
+              
+              decoded_llmApiKey=$(echo '${{ needs.decode-env-values.outputs.llmApiKey }}' | base64 -di | base64 -di)
+              echo "::add-mask::$decoded_llmApiKey"
+              echo "decodedLlmApiKey=$decoded_llmApiKey" >> $GITHUB_OUTPUT
+              
+    needs:
+      - set-env-values
+      - _status_testing
+    outputs:
+      decodedAiAgentMaxIterations: ${{ steps.decode_secrets.outputs.aiAgentMaxIterations }}
+      decodedAiAgentBaseContainerImage: ${{ steps.decode_secrets.outputs.aiAgentBaseContainerImage }}
+      decodedAiAgentTargetBranch: ${{ steps.decode_secrets.outputs.aiAgentTargetBranch }}
+      decodedPatToken: ${{ steps.decode_secrets.outputs.patToken }}
+      decodedPatUserName: ${{ steps.decode_secrets.outputs.patUserName }}
+      decodedLlmApiKey: ${{ steps.decode_secrets.outputs.llmApiKey }}
     permissions: write-all
     runs-on: ubuntu-latest
   _status-success:
@@ -379,15 +463,15 @@ jobs:
       macro: ${{ '@openhands-agent' }}
       max_iterations: >-
         ${{ fromJson(vars.OPENHANDS_MAX_ITER ||
-        needs.set-env-values.outputs.aiAgentMaxIterations) }}
+        needs.decode-env-values.outputs.decodedAiAgentMaxIterations) }}
       base_container_image: >-
         ${{ vars.OPENHANDS_BASE_CONTAINER_IMAGE ||
-        needs.set-env-values.outputs.aiAgentBaseContainerImage }}
+        needs.decode-env-values.outputs.decodedAiAgentBaseContainerImage }}
       LLM_MODEL: ${{  'anthropic/claude-3-5-sonnet-20241022' }}
       target_branch: >-
         ${{ vars.TARGET_BRANCH ||
-        needs.set-env-values.outputs.aiAgentTargetBranch }}
+        needs.decode-env-values.outputs.decodedAiAgentTargetBranch }}
     secrets:
-      PAT_TOKEN: ${{ needs.set-env-values.outputs.aiAgentMaxIterations }}
-      PAT_USERNAME: ${{ needs.set-env-values.outputs.aiAgentMaxIterations  }}
-      LLM_API_KEY: ${{ needs.set-env-values.outputs.llmApiKey }}
+      PAT_TOKEN: ${{ needs.decode-env-values.outputs.decodedPatToken }}
+      PAT_USERNAME: ${{ needs.decode-env-values.outputs.decodedPatUserName  }}
+      LLM_API_KEY: ${{ needs.decode-env-values.outputs.decodedLlmApiKey }}
