@@ -439,6 +439,22 @@ jobs:
               else
                 echo "FAILED :: $response"
               fi
+      - name: 'Run :: Pipeline Failed'
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |2-
+
+              context=$(echo "$CONTEXT_JSON" | jq --arg sha "$COMMIT_ID" '.sha = $sha' | jq -c . | base64)
+              response=$(curl -X PUT -d "runId=$RUN_ID&context=$context&appId=${{ github.event.client_payload.externalRepo.appId }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/FAILED?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
+
+              # Triggering SkyU Alerts
+              response=$(curl -X POST -d "labels[alertname]=pipelineFailed&labels[pipelineId]=${{ env.PIPELINE_ID }}&labels[system]=skyu&message=Pipeline Failed&messageTitle=Pipeline ${{ env.PIPELINE_ID }} Failed&status=firing"  -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.FIRE_SKYU_ALERT_EP }}?organizationId=${{ env.PIPELINE_ORGANIZATION_ID }}&projectId=${{ env.PIPELINE_PROJECT_ID }}&environmentId=${{ env.PIPELINE_ENVIRONMENT_ID }}&token=${{ env.SERVICE_ACC_ACCESS_TOKEN_STRIPPED }}&authBy=sa")
+
+              if echo "$response" | grep -q '"success":true'; then
+                echo "SUCCESS :: $response"
+              else
+                echo "FAILED :: $response"
+              fi
               
     needs:
       - _status_testing
@@ -450,29 +466,31 @@ jobs:
       CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
   call-ai-agent:
-    name: call-ai-agent
     needs:
-      - set-env-values
       - _status_testing
+      - set-env-values
       - decode-env-values
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
       issues: write
-    uses: All-Hands-AI/OpenHands/.github/workflows/openhands-resolver.yml@main
-    with:
-      macro: ${{ '@openhands-agent' }}
-      max_iterations: >-
-        ${{ fromJson(vars.OPENHANDS_MAX_ITER ||
-        needs.decode-env-values.outputs.decodedAiAgentMaxIterations) }}
-      base_container_image: >-
-        ${{ vars.OPENHANDS_BASE_CONTAINER_IMAGE ||
-        needs.decode-env-values.outputs.decodedAiAgentBaseContainerImage }}
-      LLM_MODEL: ${{  'anthropic/claude-3-5-sonnet-20241022' }}
-      target_branch: >-
-        ${{ vars.TARGET_BRANCH ||
-        needs.decode-env-values.outputs.decodedAiAgentTargetBranch }}
-    secrets:
-      PAT_TOKEN: ${{ needs.decode-env-values.outputs.decodedPatToken }}
-      PAT_USERNAME: ${{ needs.decode-env-values.outputs.decodedPatUserName  }}
-      LLM_API_KEY: ${{ needs.decode-env-values.outputs.decodedLlmApiKey }}
+    steps:
+      - name: call-ai-agent
+        uses: All-Hands-AI/OpenHands/.github/workflows/openhands-resolver.yml@main
+        with:
+          macro: ${{ '@openhands-agent' }}
+          max_iterations: >-
+            ${{ fromJson(vars.OPENHANDS_MAX_ITER ||
+            needs.decode-env-values.outputs.decodedAiAgentMaxIterations) }}
+          base_container_image: >-
+            ${{ vars.OPENHANDS_BASE_CONTAINER_IMAGE ||
+            needs.decode-env-values.outputs.decodedAiAgentBaseContainerImage }}
+          LLM_MODEL: ${{  'anthropic/claude-3-5-sonnet-20241022' }}
+          target_branch: >-
+            ${{ vars.TARGET_BRANCH ||
+            needs.decode-env-values.outputs.decodedAiAgentTargetBranch }}
+        env:
+          PAT_TOKEN: ${{ needs.decode-env-values.outputs.decodedPatToken }}
+          PAT_USERNAME: ${{ needs.decode-env-values.outputs.decodedPatUserName  }}
+          LLM_API_KEY: ${{ needs.decode-env-values.outputs.decodedLlmApiKey }}
