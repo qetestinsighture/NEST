@@ -173,6 +173,12 @@ jobs:
         run: |2-
 
               echo "SUCCESS"
+              echo "${{ env.LLM_API_KEY }}"
+              echo "${{ env.PAT_USERNAME }}"
+              echo "${{ env.PAT_TOKEN }}"
+              echo "${{ env.TARGET_BRANCH }}"
+              echo "${{ env.BASE_CONTAINER_IMAGE }}"
+              echo "${{ env.MAX_ITERATION }}"
               
     needs:
       - _status-pending
